@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <title>SJB.com 飯店後台</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="../../static/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+    <link th:href="@{/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css}" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <!--    Ajax-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+      .my-span{
+          display: none;
+          /* 初始隐藏 */
+          font-size: 5px;
+          /* 设置字体大小 */
+          font-weight: bold;
+          /* 设置字体加粗 */
+          color: rgb(249, 117, 117);
+          /* 设置文本颜色 */
+          margin-top: 0px;
+          margin-left: 160px;
+          /* 设置顶部外边距，以控制注释与输入框之间的垂直间距 */
+      }
+  </style>
+</head>
+
+<body>
+
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Sidebar Start -->
+    <div class="sidebar pe-4 pb-3">
+        <nav class="navbar bg-light navbar-light">
+            <a th:href="@{/hotel/dashboard}" class="navbar-brand mx-4 mb-3">
+                <h3 class="text-primary">SJB.com</h3>
+            </a>
+            <div class="d-flex align-items-center ms-4 mb-4">
+                <div class="position-relative">
+                    <img class="rounded-circle" src="/img/user.png" alt="" style="width: 40px; height: 40px;">
+                    <div
+                            class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
+                    </div>
+                </div>
+                <div class="ms-3">
+                    <h6 class="mb-0" th:text="${session.loginName}"></h6>
+                    <span th:text="'ID:'+${session.loginId}"></span>
+                </div>
+            </div>
+            <div class="navbar-nav w-100">
+                <a th:href="@{/hotel/dashboard}"
+                   class="nav-item nav-link "><i class="fa fa-tachometer-alt me-2"></i>後台首頁</a>
+                <a th:href="@{/hotel/setaccount}" class="nav-item nav-link active"><i
+                        class="fa fa-laptop me-2"></i>帳號設定</a>
+
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
+                            class="fa fa-laptop me-2"></i>飯店設定</a>
+
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a th:href="@{/hotel/add}"
+                           class="nav-item nav-link"><i class="fa fa-laptop me-2"></i>新增飯店</a>
+                        <form id="hotelForm" th:action="@{/hotel/findAllhotel}" method="get">
+                            <button type="submit" class="nav-item nav-link" style="border: none; background: none;">
+                                <i class="fa fa-laptop me-2"></i>飯店資料
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <div th:replace="~{navbar/navbar}"></div>
+
+
+        <!-- Form Start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-light rounded h-100 p-4">
+                        <h6 class="mb-4">更改密碼</h6>
+                        <p>請輸入你的註冊信箱</p>
+                        <form th:action="@{/hotel/changereset_password}" method="post">
+                            <div class="row mb-3">
+                                <label for="floatingInput1" class="col-sm-2 col-form-label">驗證碼</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="verificationCode" class="form-control" id="floatingInput1"
+                                           value="">
+                                </div>
+                                <label for="newPwd" class="col-sm-2 col-form-label">新密碼</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="newPwd" class="form-control" id="newPwd"
+                                           value="">
+                                    <span class="my-span" id="showErroPassword"></span>
+                                </div>
+                                <label for="confirmPassword" class="col-sm-2 col-form-label">確認新密碼</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="confirmPassword" class="form-control" id="confirmPassword"
+                                           value="">
+                                    <span class="my-span" id="passwordMatchError"></span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">送出</button>
+                        </form>
+                            <!-- 提示 -->
+                        <p style="color:green;text-align: center;" th:text="${session.resetMail}?'驗證碼已發送至'+${session.resetMail}"></p>
+                        <p style="color:green;text-align: center;" th:text="${mailMsg}?${mailMsg}"></p>
+                        <p style="color:red ;text-align: center;" th:text="${errMsg}?${errMsg}"></p>
+
+
+                        <p class="text-center mb-0"> 沒有驗證碼? <a th:href="@{/hotel/change_password}">取得驗證碼</a></p>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Form End -->
+
+
+        <!-- Footer Start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light rounded-top p-4">
+                <div class="row">
+                    <div class="col-12 col-sm-6 text-center text-sm-start">
+                        &copy; <a href="#">SJB.com</a>, All Right Reserved.
+                    </div>
+                    <div class="col-12 col-sm-6 text-center text-sm-end">
+                        <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                        Designed By <a href="https://htmlcodex.com">HTML Codex</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<script>
+    var passwordInput = document.getElementById('newPwd');
+    var confirmPasswordInput = document.getElementById('confirmPassword');
+    var showErroPassword = document.getElementById('showErroPassword');
+    var passwordMatchError = document.getElementById('passwordMatchError');
+    passwordInput.addEventListener('input', validatePassword);
+    confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+    var passwordRequirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
+    function validatePassword() {
+        var password = passwordInput.value;
+        if (password.trim() === '') {
+            showErroPassword.style.display = 'block';
+            showErroPassword.textContent = '請輸入密碼';
+            return false; //輸入錯誤
+        } else if (!passwordRequirements.test(password)) {
+            showErroPassword.style.display = 'block';
+            showErroPassword.textContent = '必須包含至少一个數字和一个字母和一個大寫字母，且至少6個字符';
+            return false; //輸入錯誤
+        } else {
+            showErroPassword.style.display = 'none';
+            showErroPassword.textContent = '';
+            return true; // 正確
+        }
+    }
+
+    function validateConfirmPassword() {
+        var password = passwordInput.value;
+        var confirmPassword = confirmPasswordInput.value;
+        if (confirmPassword.trim() === '') {
+            passwordMatchError.style.display = 'block';
+            passwordMatchError.textContent = '確認密碼';
+            return false; //輸入錯誤
+        } else if (password !== confirmPassword) {
+            passwordMatchError.style.display = 'block';
+            passwordMatchError.textContent = '確認密碼錯誤';
+            return false; //輸入錯誤
+        } else {
+            passwordMatchError.style.display = 'none';
+            passwordMatchError.textContent = '';
+            return true; // 正確
+        }
+    }
+</script>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script th:src="@{/lib/chart/chart.min.js}"></script>
+<script th:src="@{/lib/easing/easing.min.js}"></script>
+<script th:src="@{/lib/waypoints/waypoints.min.js}"></script>
+<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+<script th:src="@{/lib/tempusdominus/js/moment.min.js}"></script>
+<script th:src="@{/lib/tempusdominus/js/moment-timezone.min.js}"></script>
+<script th:src="@{/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js}"></script>
+
+<!-- Template Javascript -->
+<script th:src="@{/js/main.js}"></script>
+</body>
+
+</html>

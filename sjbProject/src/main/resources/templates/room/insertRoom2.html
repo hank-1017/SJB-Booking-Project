@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="container">
+		<h1>Hotel Management</h1>
+		<!-- 添加產品圖片 -->
+		<h2>Add Product Picture</h2>
+
+		<form method="post"
+			action="http://localhost:8080/BackStage/insertRoom/CreatRoom4"
+			enctype="multipart/form-data">
+
+			<input type="hidden" name="productId" value="${productId}"> <input
+				type="hidden" name="hotelId" value="${hotelId}"> <label
+				for="imageUpload">Upload Images (up to 20):</label> <input
+				type="file" id="imageUpload" name="imageUpload" multiple><br>
+			<br>
+			<button class="button" type="submit">完成</button>
+		</form>
+
+
+	</div>
+
+</body>
+</html>

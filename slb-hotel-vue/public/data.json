@@ -1,0 +1,49 @@
+{
+  "data": [
+    {
+      "orderID": "412453",
+      "loginID": "12042323",
+      "orderTime": "2023/03/01",
+      "updateTime": "2023/03/03",
+      "checkInTime": "2023/03/28",
+      "checkOutTime": "2023/04/01",
+      "quantity": "85412",
+      "payment": "信用卡",
+      "orderStatus": "已付款"
+    },
+    {
+      "orderID": "875234",
+      "loginID": "23455346",
+      "orderTime": "2023/03/05",
+      "updateTime": "2023/03/08",
+      "checkInTime": "2023/04/03",
+      "checkOutTime": "2023/04/07",
+      "quantity": "41253",
+      "payment": "銀行轉帳",
+      "orderStatus": "已付款"
+    },
+    {
+      "orderID": "234523",
+      "loginID": "23455346",
+      "orderTime": "2023/03/05",
+      "updateTime": "2023/03/08",
+      "checkInTime": "2023/04/03",
+      "checkOutTime": "2023/04/07",
+      "quantity": "41253",
+      "payment": "銀行轉帳",
+      "orderStatus": "已付款"
+    },
+    {
+      "orderID": "234525",
+      "loginID": "23455346",
+      "orderTime": "2023/03/05",
+      "updateTime": "2023/03/08",
+      "checkInTime": "2023/04/03",
+      "checkOutTime": "2023/04/07",
+      "quantity": "41253",
+      "payment": "銀行轉帳",
+      "orderStatus": "已付款"
+    }
+
+  ]
+}

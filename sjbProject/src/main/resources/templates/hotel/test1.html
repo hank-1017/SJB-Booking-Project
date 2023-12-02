@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+測試
+
+<p>Code：<input type="text" th:value="${param.code}" id="test"></p>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var testcode = $('#test').val(); //拿到內容
+        console.log(testcode)
+        var formData = {
+            grant_type: 'authorization_code',
+            code: testcode,
+            redirect_uri: "http://localhost:8080/sjb/hotel/testline",
+            client_id: "2000911017",
+            client_secret: "7389ef57adffa0ac4b1f046be56f74ce",
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: 'https://api.line.me/oauth2/v2.1/token',
+            data: formData, // 这里不需要使用 $.param
+            contentType: 'application/x-www-form-urlencoded',
+            success: function (response) {
+                //第一次回傳成功取值
+                console.log('POST请求成功:', response);
+                console.log('POST请求成功 idToken:', response.id_token)
+                var idToken = response.id_token;
+                //設定第二次回傳資料
+                var formData = {
+                    id_token: idToken,
+                    client_id: 2000911017
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: 'https://api.line.me/oauth2/v2.1/verify',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: formData,
+                    success: function (secondResponse) {
+                        console.log('第二次請求成功:', secondResponse);
+                    },
+                    error: function (secondError) {
+                        console.error('第二次請求失败:', secondError);
+                    }
+                });
+
+            },
+            error: function (error) {
+                console.error('POST请求失败:', error);
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

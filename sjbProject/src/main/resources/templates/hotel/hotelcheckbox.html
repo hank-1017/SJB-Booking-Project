@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <title>SJB.com 飯店後台</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <style>
+        .Error {
+            display: none;
+            /* 初始隐藏 */
+            font-size: 14px;
+            /* 设置字体大小 */
+            font-weight: bold;
+            /* 设置字体加粗 */
+            color: rgb(249, 117, 117);
+            /* 设置文本颜色 */
+            margin: top 0px;
+            margin-left: 160px;
+            /* 设置顶部外边距，以控制注释与输入框之间的垂直间距 */
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="~{navbar/navbar2}"></div>
+<!-- Content Start -->
+<div class="content">
+
+    <div th:replace="~{navbar/navbar}"></div>
+
+    <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+            <div class="col-sm-12 col-md-6">
+                <div class="bg-light rounded h-100 p-5">
+                    <h6 class="mb-4">飯店設施服務</h6>
+                    <H6 class="mb-4" th:value="${hotel.hotelName}"></H6>
+                    <input type="hidden" name="hotelID" th:value="${hotel.hotelID}" id="hotelID"/>
+                    <div class="mb-3 text-dark">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="cleanService"
+                                   th:checked="${hotelDetail.cleaningService}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <label class="form-check-label" for="cleanService">每日清潔服務
+                            </label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="expressCheckin"
+                                   th:checked="${hotelDetail.expressCheckin}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <label class="form-check-label" for="expressCheckin">快速入住
+                            </label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="counter24hr"
+                                   th:checked="${hotelDetail.counter24hr}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <label class="form-check-label" for="counter24hr">24 小時接待櫃檯
+                            </label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="freeWiFi"
+                                   th:checked="${hotelDetail.freeWiFi}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <label class="form-check-label" for="freeWiFi">
+                                免費WiFi
+                            </label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="roomCard"
+                                   th:checked="${hotelDetail.roomCard}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <label class="form-check-label" for="roomCard">房卡進出
+                            </label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="noSmoking"
+                                   th:checked="${hotelDetail.noSmoking}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <label class="form-check-label" for="noSmoking">全面禁菸
+                            </label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="petFriendly"
+                                   th:checked="${hotelDetail.petFriendly}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <label class="form-check-label" for="petFriendly">可攜帶寵物
+                            </label>
+                        </div>
+                        <form class="addpetmoney" method="post" style="display: none;" id="addpetmoney">
+                            <input type="hidden" name="hotelID" th:value="${hotel.hotelID}" id="hotelID"/>
+                            <div class="mb-3">
+                                <label for="petDeposit">寵物押金</label>
+                                <input type="text" name="petDeposit" class="form-control small-input text-dark"
+                                       id="petDeposit" th:value="${hotelDetail.petDeposit}"/>
+                                <span class="Error" id="petDepositError"></span> <!-- 顯示錯誤訊息 -->
+                            </div>
+                            <div class="mb-3">
+                                <label for="petCleaningFee">寵物清潔費</label>
+                                <input type="text" name="petCleaningFee" class="form-control small-input text-dark"
+                                       id="petCleaningFee" th:value="${hotelDetail.petCleaningFee}"/>
+                                <span class="Error" id="petCleaningFeeError"></span> <!-- 顯示錯誤訊息 -->
+                            </div>
+                            <input type="submit" name="submit" id="petsubmit" class="btn btn-primary mt-3"
+                                   value="設定寵物押金清潔費"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <div class="bg-light rounded h-100 p-5">
+                    <h6 class="mb-4">預訂須知</h6>
+                    <div class="form-floating">
+                            <textarea class="form-control text-dark" placeholder="Leave a comment here"
+                                      id="floatingTextarea" style="height: 150px;"
+                                      th:text="${hotelDetail.reservationNotice}"></textarea>
+                    </div>
+                    <button id="submitButton" class="btn btn-primary mt-3">更新預訂須知</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer Start -->
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-light rounded-top p-4">
+            <div class="row">
+                <div class="col-12 col-sm-6 text-center text-sm-start">
+                    &copy; <a href="#">SJB.com</a>, All Right Reserved.
+                </div>
+                <div class="col-12 col-sm-6 text-center text-sm-end">
+                    <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                    Designed By <a href="https://htmlcodex.com">HTML Codex</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+</div>
+<!-- Content End -->
+
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // 檢查输入是否為整数
+    function isValidInteger(value) {
+        return /^-?\d+$/.test(value);
+    }
+
+    var petDepositInput = document.getElementById('petDeposit');
+    var petDepositError = document.getElementById('petDepositError');
+    var petCleaningFeeInput = document.getElementById('petCleaningFee');
+    var petCleaningFeeError = document.getElementById('petCleaningFeeError');
+    var addpetmoneyInput = document.getElementById('addpetmoney');
+    var petFriendlyInput = document.getElementById('petFriendly');
+    var petFriendly = petFriendlyInput.checked;
+    if (petFriendly === true) {
+        addpetmoneyInput.style.display = 'block';
+    }
+
+    petDepositInput.addEventListener('input', validatepetDeposit)
+    petCleaningFeeInput.addEventListener('input', validatepetCleaningFee)
+
+    function validatepetDeposit() {
+        var inputValue = petDepositInput.value;
+        if (!isValidInteger(inputValue) || parseInt(inputValue) > 50000) {
+            petDepositError.style.display = 'block';
+            petDepositError.textContent = '請輸入金額。金額上限50000';
+            return false;
+        } else {
+            petDepositError.style.display = 'none';
+            petDepositError.textContent = '';
+            return true;
+        }
+
+    }
+
+    function validatepetCleaningFee() {
+        var inputValue = petCleaningFeeInput.value;
+        if (!isValidInteger(inputValue) || parseInt(inputValue) > 50000) {
+            petCleaningFeeError.style.display = 'block';
+            petCleaningFeeError.textContent = '請輸入金額。金額上限50000';
+            return false;
+        } else {
+            petCleaningFeeError.style.display = 'none';
+            petCleaningFeeError.textContent = '';
+            return true;
+        }
+
+    }
+
+
+    petCleaningFeeInput.addEventListener('input', function () {
+        var inputValue = petCleaningFeeInput.value;
+        if (!isValidInteger(inputValue)) {
+            petCleaningFeeInput.value = inputValue.replace(/[^0-9-]/g, '');
+        }
+    });
+
+    // 驗證數據 送出數據
+    function validateAndSubmit() {
+        var ispetDeposit = validatepetDeposit();
+        var ispetCleaningFee = validatepetCleaningFee();
+        if (ispetDeposit && ispetCleaningFee) {
+            return true;
+        } else {
+            // 驗證失敗，返回false
+            return false;
+        }
+    };
+
+    $('.addpetmoney').submit(function (event) {
+        if (!validateAndSubmit()) {
+            return false; // 數據驗證失敗按鈕無法下一步
+        }
+        //取消預設動作
+        event.preventDefault();
+        var petDeposit = $("#petDeposit").val();
+        var petCleaningFee = $("#petCleaningFee").val();
+        var message = "新增\n\n";
+        message += "寵物押金: " + petDeposit + "\n";
+        message += "寵物清潔費: " + petCleaningFee + "\n";
+        var isConfirmed = confirm(message);
+        console.log('啟動')
+        // 取得Form資料
+        const formData = $(this).serialize();
+        console.log('取得表單資料')
+        if (isConfirmed) {
+            var hotelID = document.getElementById('hotelID').value; // 拿到id
+            //ajax傳送
+            $.ajax({
+                type: 'POST',
+                url: '/sjb/hotel/SetPetMoney',
+                data: formData,
+                headers: {
+                    'X-CSRF-TOKEN': $('input[name=_csrf]').val()
+                },
+                //成功重新導向
+                success: function (response) {
+                    console.log('checkState success:', response);
+                    if (response === "Y") {
+                        window.location.href = "/sjb/hotelDetail/checkbox?hotelID=" + hotelID;
+                    }
+                },
+                error: function (error) {
+                    console.error('AJAX error:', error);
+                }
+            });
+        } else {
+            //confirm 不做事情
+        }
+    });
+
+
+    // 定義髒話
+    var sensitiveWords = ["幹", "幹您娘", "fuck"];
+
+    //检查內容中是否包含髒話
+    function containsSensitiveWords(text) {
+        for (var i = 0; i < sensitiveWords.length; i++) {
+            if (text.toLowerCase().includes(sensitiveWords[i].toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    $('#submitButton').click(function (event) {
+        //取消預設動作
+        event.preventDefault();
+        var reservationNotice = $('#floatingTextarea').val(); //拿到內容
+        if (containsSensitiveWords(reservationNotice)) {
+            alert("包含敏感詞彙 請重新輸入");
+        } else {
+            var hotelID = document.getElementById('hotelID').value; // 拿到id
+            var message = "新增預定須知\n";
+            message += "" + reservationNotice + "\n";
+            var isConfirmed = confirm(message);
+            console.log('啟動')
+            if (isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/sjb/hotel/reservationNotice',
+                    data: {reservationNotice: reservationNotice, hotelID: hotelID},
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name=_csrf]').val()
+                    },
+                    success: function (response) {
+                        if (response === "Y") {
+                            console.log("成功");
+                            window.location.href = "/sjb/hotelDetail/checkbox?hotelID=" + hotelID;
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+
+                    }
+                });
+            } else {
+                //confirm 不做事情
+            }
+        }
+    });
+
+    $('#cleanService').change(function () {
+        var hotelID = document.getElementById('hotelID').value;
+        console.log(hotelID);
+        var isChecked = $(this).prop('checked');
+        // var hotelID = document.getElementById('hotelID').value;
+
+        console.log('目前狀態', isChecked);
+        $.ajax({
+            type: 'POST',
+            url: '/sjb/hotelDetail/cleanService',
+            data: {cleanService: isChecked, hotelID: hotelID},
+            headers: {
+                'X-CSRF-TOKEN': $('input[name=_csrf]').val()
+            },
+            success: function (response) {
+                if (response === "changeFinish")
+                    console.log("更改完成");
+            },
+            error: function (xhr, status, error) {
+
+                console.error(error);
+            }
+        });
+    });
+    $('#expressCheckin').change(function () {
+        var hotelID = document.getElementById('hotelID').value;
+        console.log(hotelID);
+        var isChecked = $(this).prop('checked');
+        // var hotelID = document.getElementById('hotelID').value;
+
+        console.log('目前狀態', isChecked);
+        $.ajax({
+            type: 'POST',
+            url: '/sjb/hotelDetail/expressCheckin',
+            data: {expressCheckin: isChecked, hotelID: hotelID},
+            headers: {
+                'X-CSRF-TOKEN': $('input[name=_csrf]').val()
+            },
+            success: function (response) {
+                if (response === "changeFinish")
+                    console.log("更改完成");
+            },
+            error: function (xhr, status, error) {
+
+                console.error(error);
+            }
+        });
+    });
+    $('#counter24hr').change(function () {
+        var hotelID = document.getElementById('hotelID').value;
+        console.log(hotelID);
+        var isChecked = $(this).prop('checked');
+        // var hotelID = document.getElementById('hotelID').value;
+
+        console.log('目前狀態', isChecked);
+        $.ajax({
+            type: 'POST',
+            url: '/sjb/hotelDetail/counter24hr',
+            data: {counter24hr: isChecked, hotelID: hotelID},
+            headers: {
+                'X-CSRF-TOKEN': $('input[name=_csrf]').val()
+            },
+            success: function (response) {
+                if (response === "changeFinish")
+                    console.log("更改完成");
+            },
+            error: function (xhr, status, error) {
+
+                console.error(error);
+            }
+        });
+    });
+    $('#freeWiFi').change(function () {
+        var hotelID = document.getElementById('hotelID').value;
+        console.log(hotelID);
+        var isChecked = $(this).prop('checked');
+        // var hotelID = document.getElementById('hotelID').value;
+
+        console.log('目前狀態', isChecked);
+        $.ajax({
+            type: 'POST',
+            url: '/sjb/hotelDetail/freeWiFi',
+            data: {freeWiFi: isChecked, hotelID: hotelID},
+            headers: {
+                'X-CSRF-TOKEN': $('input[name=_csrf]').val()
+            },
+            success: function (response) {
+                if (response === "changeFinish")
+                    console.log("更改完成");
+            },
+            error: function (xhr, status, error) {
+
+                console.error(error);
+            }
+        });
+    });
+    $('#roomCard').change(function () {
+        var hotelID = document.getElementById('hotelID').value;
+        console.log(hotelID);
+        var isChecked = $(this).prop('checked');
+        // var hotelID = document.getElementById('hotelID').value;
+
+        console.log('目前狀態', isChecked);
+        $.ajax({
+            type: 'POST',
+            url: '/sjb/hotelDetail/roomCard',
+            data: {roomCard: isChecked, hotelID: hotelID},
+            headers: {
+                'X-CSRF-TOKEN': $('input[name=_csrf]').val()
+            },
+            success: function (response) {
+                if (response === "changeFinish")
+                    console.log("更改完成");
+            },
+            error: function (xhr, status, error) {
+
+                console.error(error);
+            }
+        });
+    });
+    $('#noSmoking').change(function () {
+        var hotelID = document.getElementById('hotelID').value;
+        console.log(hotelID);
+        var isChecked = $(this).prop('checked');
+        // var hotelID = document.getElementById('hotelID').value;
+
+        console.log('目前狀態', isChecked);
+        $.ajax({
+            type: 'POST',
+            url: '/sjb/hotelDetail/noSmoking',
+            data: {noSmoking: isChecked, hotelID: hotelID},
+            headers: {
+                'X-CSRF-TOKEN': $('input[name=_csrf]').val()
+            },
+            success: function (response) {
+                if (response === "changeFinish")
+                    console.log("更改完成");
+            },
+            error: function (xhr, status, error) {
+
+                console.error(error);
+            }
+        });
+    });
+    $('#petFriendly').change(function () {
+        var hotelID = document.getElementById('hotelID').value;
+        console.log(hotelID);
+        var isChecked = $(this).prop('checked');
+        // var hotelID = document.getElementById('hotelID').value;
+
+        console.log('目前狀態', isChecked);
+        $.ajax({
+            type: 'POST',
+            url: '/sjb/hotelDetail/petFriendly',
+            data: {petFriendly: isChecked, hotelID: hotelID},
+            headers: {
+                'X-CSRF-TOKEN': $('input[name=_csrf]').val()
+            },
+            success: function (response) {
+                if (response === "true") {
+                    console.log("開啟寵物表單")
+                    $('#addpetmoney').show();
+                } else if (response === "false"){
+                    console.log("關閉寵物表單")
+                    $('#addpetmoney').hide();
+                }
+            },
+            error: function (xhr, status, error) {
+
+                console.error(error);
+            }
+        });
+    });
+</script>
+<script th:src="@{/lib/chart/chart.min.js}"></script>
+<script th:src="@{/lib/easing/easing.min.js}"></script>
+<script th:src="@{/lib/waypoints/waypoints.min.js}"></script>
+<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+<script th:src="@{/lib/tempusdominus/js/moment.min.js}"></script>
+<script th:src="@{/lib/tempusdominus/js/moment-timezone.min.js}"></script>
+<script th:src="@{/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js}"></script>
+
+<!-- Template Javascript -->
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+
+</html>

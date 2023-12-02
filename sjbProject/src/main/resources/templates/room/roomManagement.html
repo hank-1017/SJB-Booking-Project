@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>roomManagement</title>
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/roomManagement.css}">
+<script th:src="@{/js/roomManagement.js}"></script>
+
+</head>
+<body>
+<div th:replace="~{navbar/navbar2}"></div>	
+	<div class="content">
+    	<div th:replace="~{navbar/navbar}"></div>
+    	<div class="center align">
+    	
+		<h1 >roomManagement</h1>
+	
+		<div class="cardAlignment">
+			<div class="card cardMargin" style="width: 18rem;">
+				<a class="nav-link active" aria-current="page"
+					th:href="@{/room/insertRoom}"> <img
+					th:src="@{/img/roomPictureDefalt.jpg}" class="card-img-top">
+				</a>
+				
+				<div class="card-body">
+					<h5 class="card-title">新增房間</h5>
+					<p class="card-text">Some quick example text to build on the card
+						title and make up the bulk of the card's content.</p>
+				</div>
+			</div>
+
+		
+				<th:block th:each="room:${Rooms}">
+					<div class="card cardMargin" style="width: 18rem;">
+						<div id="image-container">
+							<!-- 預設的img -->
+							<img th:src="@{/img/roomPictureDefalt.jpg}" class="card-img-top"
+								th:alt=${room.productName}>
+		
+						</div>
+						<div class="card-body">
+							<h5 class="card-title" th:text=${room.productName}>Card title</h5>
+							<p class="card-text">Some quick example text to build on the
+								card title and make up the bulk of the card's content.</p>
+								
+							<div class="form-check form-switch">
+								<input class="form-check-input" type="checkbox" role="switch" th:value="${room.enableSwitch}" name="enableSwitch" id="enableSwitch" th:checked="${room.enableSwitch}" disabled>
+								<label class="form-check-label" for="enableSwitch" id="enableSwitchLabel"></label>
+							</div>
+								
+							<div class="btn-group">
+								<form th:action="@{/room/updateRoomGet}" method="get">
+									<input type="hidden" name="hotelID" th:value="${room.hotelID}" />
+									<input type="hidden" name="productID"
+										th:value="${room.productID}" />
+									<button type="submit" class="btn btn-outline-primary ">編輯</button>
+								</form>
+		
+								<form id="deleteForm" th:action="@{/room/delete}" method="post">
+									<input type="hidden" name="hotelID" th:value="${room.hotelID}" />
+									<input type="hidden" name="productID"
+										th:value="${room.productID}" />
+									<!-- p.67 需在application.properties中設定 -->
+									<!-- spring.mvc.hiddenmethod.filter.enabled=true -->
+									<input type="hidden" name="_method" value="delete" />
+									<button id="deleteBtn" type="submit" class="btn btn-outline-danger">刪除</button>
+								</form>
+		
+								<form th:action="@{/room/addphoto}" method="post" enctype="multipart/form-data" id="upload-form">
+									<label class="btn btn-primary"> 
+									<input type="hidden" name="hotelID" th:value="${room.hotelID}" /> 
+									<input type="hidden" name="productID" th:value="${room.productID}" />
+									<input type="file" class="btn btn-primary btn-sm" name="photofile" id="photofile" required multiple style="display: none;"> 上傳圖片</label>
+								</form>
+								
+							</div>
+						</div>
+					</div>
+				</th:block>
+			</div>
+	
+		
+		</div>
+    </div>
+
+
+	
+	
+
+</body>
+</html>

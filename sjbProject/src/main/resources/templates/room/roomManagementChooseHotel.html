@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>roomManagementChoose</title>
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/roomManagement.css}">
+
+</head>
+<body>
+<div th:replace="~{navbar/navbar2}"></div>	
+	<div class="content">
+    	<div th:replace="~{navbar/navbar}"></div>	
+		<div class="center align">
+		
+		<h1>選擇飯店</h1>
+		<div class="cardAlignment">
+		
+				<th:block th:each="hotel:${hotels}">
+						<input type="hidden" name="hotelID" th:value="${hotel.hotelID}" />
+						<div class="card" style="width: 18rem;">
+						<div id="image-container">
+							<a th:href="@{/room/setSessionHotelID(hotelID=${hotel.hotelID})}">
+								<img th:src="@{/img/HotelLocation.png}" class="card-img-top"
+									th:alt=${hotel.hotelName}>
+							</a>
+						</div>
+							<div class="card-body">
+								<h5 class="card-title" th:text=${hotel.hotelName}>Card title</h5>
+								<p class="card-text" th:text="'電話：' + ${hotel.tel}"></p>
+								<p class="card-text" th:text="'所在國家：' + ${hotel.country}"></p>
+								<p class="card-text" th:text=" ${hotel.postalCode} + ' ' + ${hotel.city} + ' ' + ${hotel.region} + ' ' + ${hotel.street}"></p>
+							</div>
+						</div>
+						
+				</th:block>
+			</div>
+		</div>
+		
+    </div>
+ 
+ 
+<script th:src="@{/js/roomManagement.js}"></script>
+</body>
+</html>

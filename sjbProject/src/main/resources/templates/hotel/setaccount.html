@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <title>SJB.com 飯店後台</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="../../static/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+    <link th:href="@{/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css}" rel="stylesheet"/>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <!--    Ajax-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $.ajax({//檢查googleID是否綁定，控制顯示綁定或解除綁定
+                type: 'GET',
+                url: '/sjb/hotel/checkGoogleID',
+                headers: {
+                    'X-CSRF-TOKEN': $('input[name=_csrf]').val()
+                },
+                success: function (response) {
+                    console.log('checkGoogleID success:', response);
+                    if (response === 'Y') {//已綁定
+                        $('#bind_google').hide();
+                        $('#deactivate-google').show();
+                    }
+                    if (response === 'N') {//未綁定
+                        $('#bind_google').show();
+                        $('#deactivate-google').hide();
+                    }
+                },
+                error: function (error) {
+                    console.error('AJAX error:', error);
+                }
+            });
+
+            $('#checkEmail').submit(function (event) {
+                event.preventDefault();
+                // 取得Form資料
+                const formData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/sjb/hotel/change_password',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name=_csrf]').val()
+                    },
+                    success: function (response) {
+                        console.log('loginForm success:', response);
+
+                        if (response === 'Y') {
+                            $('#errMsg').html(null);
+                            window.location.href = '/sjb/hotel/changereset_password';
+                        }
+                        if (response === 'N') {
+                            $('#errMsg').html('此信箱尚未註冊');
+                        }
+                    },
+                    error: function (error) {
+                        console.error('AJAX error:', error);
+                    }
+                });
+            });
+
+            $('#clearGoogleIDForm').submit(function (event) {
+                event.preventDefault();
+                // 取得Form資料
+                const formData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/sjb/hotel/clearGoogleID',
+                    data: formData,
+                    success: function (response) {
+                        console.log('clearGoogleIDForm success:', response);
+
+                        if (response === 'Y') {
+                            $('#bind_google').show();
+                            $('#deactivate-google').hide();
+                            // $('#bind_sucess_Msg').html('已解除綁定');
+                            // $('#bind_danger_Msg').html('');
+                            window.alert('解除綁定成功');
+                            // window.location.href = '/sjb/hotel/setaccount';
+                        }
+                        if (response === 'N') {
+                            $('#bind_google').hide();
+                            $('#deactivate-google').show();
+                            // $('#bind_danger_Msg').html('解除綁定失敗! !');
+                            // $('#bind_sucess_Msg').html('');
+                            window.alert('解除綁定失敗');
+                        }
+                    },
+                    error: function (error) {
+                        console.error('AJAX error:', error);
+                    }
+                });
+            });
+
+
+        });
+    </script>
+
+    <!--    Google 登入-->
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script>
+        function handleCredentialResponse(response) {<!--Google 登入-->
+            const responsePayload = decodeJwtResponse(response.credential);
+            const formData = JSON.stringify(responsePayload);
+            $.ajax({<!--Google Login AJAX-->
+                type: 'POST',
+                url: '/sjb/hotel/bindGoogleID',
+                data: formData,
+                dataType: 'text',
+                contentType: 'application/json',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                success: function (response) {
+                    console.log('loginForm success:', response);
+                    if (response === 'Y') {
+                        // window.location.href = '/sjb/hotel/setaccount';
+                        $('#bind_google').hide();
+                        $('#deactivate-google').show();
+                        // $('#bind_sucess_Msg').html('綁定成功');
+                        // $('#bind_danger_Msg').html('');
+                        window.alert('綁定成功');
+                    }
+                    if (response === 'N') {
+                        // $('#bind_google_Msg').html('已解除綁定');
+                        $('#bind_google').show();
+                        $('#deactivate-google').hide();
+                        // $('#bind_sucess_Msg').html('');
+                        // $('#bind_danger_Msg').html('此Google帳號已被綁定');
+                        window.alert('此Google帳號已被綁定');
+                    }
+                },
+                error: function (error) {
+                    console.error('AJAX error:', error);
+                }
+            });
+        }
+
+        function decodeJwtResponse(token) {<!--解碼-->
+            const base64Url = token.split(".")[1];
+            const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+            const jsonPayload = decodeURIComponent(
+                atob(base64)
+                    .split("")
+                    .map(function (c) {
+                        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+                    })
+                    .join("")
+            );
+            return JSON.parse(jsonPayload);
+        }
+    </script>
+</head>
+
+<body>
+
+
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Sidebar Start -->
+    <div class="sidebar pe-4 pb-3">
+        <nav class="navbar bg-light navbar-light">
+            <a th:href="@{/hotel/dashboard}" class="navbar-brand mx-4 mb-3">
+                <h3 class="text-primary">SJB.com</h3>
+            </a>
+            <div class="d-flex align-items-center ms-4 mb-4">
+                <div class="position-relative">
+                    <img class="rounded-circle" src="/img/user.png" alt="" style="width: 40px; height: 40px;">
+                    <div
+                            class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
+                    </div>
+                </div>
+                <div class="ms-3">
+                    <h6 class="mb-0" th:text="${session.loginName}"></h6>
+                    <span th:text="'ID:'+${session.loginId}"></span>
+                </div>
+            </div>
+            <div class="navbar-nav w-100">
+                <a th:href="@{/hotel/dashboard}"
+                   class="nav-item nav-link "><i class="fa fa-tachometer-alt me-2"></i>後台首頁</a>
+                <a th:href="@{/hotel/setaccount}" class="nav-item nav-link active"><i
+                        class="fa fa-laptop me-2"></i>帳號設定</a>
+
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
+                            class="fa fa-laptop me-2"></i>飯店設定</a>
+
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a th:href="@{/hotel/add}"
+                           class="nav-item nav-link"><i class="fa fa-laptop me-2"></i>新增飯店</a>
+                        <form id="hotelForm" th:action="@{/hotel/findAllhotel}" method="get">
+                            <button type="submit" class="nav-item nav-link" style="border: none; background: none;">
+                                <i class="fa fa-laptop me-2"></i>飯店資料
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- Content Start -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
+    <!-- Back to Top -->
+    <div class="content">
+        <div th:replace="~{navbar/navbar}"></div>
+        <!-- Content End -->
+        <!--提示框-->
+        <!--        <div id="sucess-alert" class="alert alert-success alert-dismissible fade show" role="alert" style="display: none">-->
+        <!--            <i class="fa fa-exclamation-circle me-2"></i>An icon & dismissing success alert—check it out!-->
+        <!--            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+        <!--        </div>-->
+        <!--        <div id="danger-alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none">-->
+        <!--            <i class="fa fa-exclamation-circle me-2"></i>An icon & dismissing danger alert—check it out!-->
+        <!--            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+        <!--        </div>-->
+
+
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <!-- 帳號密碼 Start -->
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-light rounded h-100 p-4">
+
+                        <h6 class="mb-4">帳號密碼</h6>
+                        <form id="checkEmail" method="post">
+                            <div class="row mb-3">
+                                <div class="col-sm-10">
+                                    <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+                                    <input type="email" readonly name="email" class="form-control" id="inputEmail"
+                                           th:value="${session.loginEmail}">
+                                    <hr>
+                                    <label for="password" class="col-sm-2 col-form-label">密碼</label>
+                                    <input type="password" readonly class="form-control" id="password"
+                                           th:value="${session.loginEmail}">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">變更密碼</button>
+                        </form>
+                        <!-- 提示 -->
+                        <p style="color:green;text-align: center;" th:text="${mailMsg}?${mailMsg}"></p>
+                        <p style="color:red ;text-align: center;" id="errMsg"></p>
+                    </div>
+                </div>
+
+
+                <!-- 帳號密碼 End -->
+
+                <!-- 快速登入 Start -->
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-light rounded h-100 p-4">
+                        <h6 class="mb-4">快速登入</h6>
+                        <div class="m-n2">
+                            <table>
+                                <!--Google-->
+                                <tr>
+                                    <td>
+                                        <svg xmlns="http://www.w3.org/2000/svg" x="px" y="0px" width="25" height="25"
+                                             viewBox="0 0 48 48">
+                                            <path fill="#FFC107"
+                                                  d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                                            <path fill="#FF3D00"
+                                                  d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
+                                            <path fill="#4CAF50"
+                                                  d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
+                                            <path fill="#1976D2"
+                                                  d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                                        </svg>
+                                        綁定Google帳號
+                                    </td>
+                                    <td>
+                                        <!--綁定google-->
+                                        <div id="bind_google" style="display: none;">
+                                            <div id="g_id_onload"
+                                                 data-client_id="61997342065-tgir9p3pmadvvutujjb7of08refefrj3.apps.googleusercontent.com"
+                                                 data-context="use"
+                                                 data-ux_mode="popup"
+                                                 data-callback="handleCredentialResponse"
+                                                 data-nonce=""
+                                                 data-auto_prompt="false">
+                                            </div>
+                                            <div class="g_id_signin"
+                                                 data-type="standard"
+                                                 data-shape="pill"
+                                                 data-theme="outline"
+                                                 data-text="continue_with"
+                                                 data-size="large"
+                                                 data-logo_alignment="left">
+                                            </div>
+                                        </div>
+                                        <!--解除綁定-->
+                                        <div id="deactivate-google" style="display: none;">
+                                            <form id="clearGoogleIDForm" th:action="@{/hotel/clearGoogleID}"
+                                                  method="post">
+                                                <input type="hidden" name="loginID" th:value="${session.loginId}"/>
+                                                <button id="deactivate-google-btn" class="btn btn-danger btn-sm rounded-pill m-2">
+                                                    解除綁定
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr></tr>
+                                <!--LINE-->
+                                <tr>
+                                    <td>
+                                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30"
+                                             viewBox="0 0 48 48">
+                                            <path fill="#00c300"
+                                                  d="M12.5,42h23c3.59,0,6.5-2.91,6.5-6.5v-23C42,8.91,39.09,6,35.5,6h-23C8.91,6,6,8.91,6,12.5v23C6,39.09,8.91,42,12.5,42z"></path>
+                                            <path fill="#fff"
+                                                  d="M37.113,22.417c0-5.865-5.88-10.637-13.107-10.637s-13.108,4.772-13.108,10.637c0,5.258,4.663,9.662,10.962,10.495c0.427,0.092,1.008,0.282,1.155,0.646c0.132,0.331,0.086,0.85,0.042,1.185c0,0-0.153,0.925-0.187,1.122c-0.057,0.331-0.263,1.296,1.135,0.707c1.399-0.589,7.548-4.445,10.298-7.611h-0.001C36.203,26.879,37.113,24.764,37.113,22.417z M18.875,25.907h-2.604c-0.379,0-0.687-0.308-0.687-0.688V20.01c0-0.379,0.308-0.687,0.687-0.687c0.379,0,0.687,0.308,0.687,0.687v4.521h1.917c0.379,0,0.687,0.308,0.687,0.687C19.562,25.598,19.254,25.907,18.875,25.907z M21.568,25.219c0,0.379-0.308,0.688-0.687,0.688s-0.687-0.308-0.687-0.688V20.01c0-0.379,0.308-0.687,0.687-0.687s0.687,0.308,0.687,0.687V25.219z M27.838,25.219c0,0.297-0.188,0.559-0.47,0.652c-0.071,0.024-0.145,0.036-0.218,0.036c-0.215,0-0.42-0.103-0.549-0.275l-2.669-3.635v3.222c0,0.379-0.308,0.688-0.688,0.688c-0.379,0-0.688-0.308-0.688-0.688V20.01c0-0.296,0.189-0.558,0.47-0.652c0.071-0.024,0.144-0.035,0.218-0.035c0.214,0,0.42,0.103,0.549,0.275l2.67,3.635V20.01c0-0.379,0.309-0.687,0.688-0.687c0.379,0,0.687,0.308,0.687,0.687V25.219z M32.052,21.927c0.379,0,0.688,0.308,0.688,0.688c0,0.379-0.308,0.687-0.688,0.687h-1.917v1.23h1.917c0.379,0,0.688,0.308,0.688,0.687c0,0.379-0.309,0.688-0.688,0.688h-2.604c-0.378,0-0.687-0.308-0.687-0.688v-2.603c0-0.001,0-0.001,0-0.001c0,0,0-0.001,0-0.001v-2.601c0-0.001,0-0.001,0-0.002c0-0.379,0.308-0.687,0.687-0.687h2.604c0.379,0,0.688,0.308,0.688,0.687s-0.308,0.687-0.688,0.687h-1.917v1.23H32.052z"></path>
+                                        </svg>
+                                        綁定LINE帳號
+                                    </td>
+                                    <td>
+                                        <!--解除綁定-->
+                                        <div id="deactivate-line" style="display: none;">
+                                            <form id="clearLINEIDForm">
+                                                <input type="hidden" name="loginID" th:value="${session.loginId}"/>
+                                                <button id="deactivate-LINE-btn" class="btn btn-danger btn-sm rounded-pill m-2">
+                                                    解除綁定
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!--提示-->
+                            <p class="text-success" id="bind_sucess_Msg"></p>
+                            <p class="text-danger" id="bind_danger_Msg"></p>
+                        </div>
+                    </div>
+
+
+                    <!-- 快速登入 End -->.
+                </div>
+            </div>
+            <!-- Footer Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-light rounded-top p-4">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 text-center text-sm-start">
+                            &copy; <a href="#">SJB.com</a>, All Right Reserved.
+                        </div>
+                        <div class="col-12 col-sm-6 text-center text-sm-end">
+                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer End -->
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script th:src="@{/lib/chart/chart.min.js}"></script>
+    <script th:src="@{/lib/easing/easing.min.js}"></script>
+    <script th:src="@{/lib/waypoints/waypoints.min.js}"></script>
+    <script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+    <script th:src="@{/lib/tempusdominus/js/moment.min.js}"></script>
+    <script th:src="@{/lib/tempusdominus/js/moment-timezone.min.js}"></script>
+    <script th:src="@{/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js}"></script>
+
+    <!-- Template Javascript -->
+    <script th:src="@{/js/main.js}"></script>
+</body>
+
+</html>

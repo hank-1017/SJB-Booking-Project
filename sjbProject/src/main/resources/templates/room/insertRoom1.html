@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert Room</title>
+	<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/insertRoom1.css}">
+</head>
+
+<body>
+<div th:replace="~{navbar/navbar2}"></div>	
+	<div class="content">
+    	<div th:replace="~{navbar/navbar}"></div>
+		<div class="center align">
+		
+		<!-- 添加酒店 -->
+		<h2>新增房間</h2>
+		<form method="post" th:action="@{/room/insertRoom}">
+		
+			<div class="borderArea">
+			
+				<div class="row">
+				
+					<div class="col">
+						<div class="mb-3">
+							<label for="productType" class="form-label">客房類型:</label> 
+							<select id="productType" name="productType" class="form-select"></select>
+						</div>	
+					</div>	
+					
+					
+					<div class="col">
+						<div class="mb-3">
+						<!-- 输入容量 -->
+							<label for="capacity" class="form-label">成人最多可入住人數:</label> 
+							<select id="capacity" name="capacity" class="form-select"></select>
+						</div>
+					</div>
+				</div>
+				
+				<div class="mb-3">
+					<!-- 输入產品名稱 -->
+					<label for="productName" class="form-label">客房名稱:</label> 
+					<input type="text" id="productName" name="productName" class="form-control">
+				</div>
+				<div >
+					<div class="row">
+				
+						<div class="col">
+							<div class="mb-3">
+								<!-- 输入數量 -->
+								<label for="quantity" class="form-label">客房數量:</label> 
+								<input type="text" id="quantity" name="quantity" class="form-control">
+							</div>
+						</div>
+						
+						<div class="col">
+							<div class="mb-3">
+								<!-- 输入價格 -->
+								<label for="price" class="form-label">標準房價:</label> 
+								<input type="text" id="price" name="price" class="form-control">	
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mb-3">
+					<!-- 输入产品描述 -->
+					<label for="productDescription" class="form-label">客房描述:</label> <br>
+					<textarea id="productDescription" name="productDescription" class="form-control" rows="5"></textarea>
+					
+				</div>
+			</div>
+			
+			
+			<!-- ###################################################################################### -->
+			
+			<div class="borderArea">
+			
+				<div class="row">
+				
+					<div class="col">
+						<div class="mb-3">
+							<!-- 选择開始日期 -->
+							<label for="dateStart" class="form-label">上架日期:</label> 
+							<input type="date" id="dateStart" name="dateStart" class="form-control">
+						</div>
+					</div>
+					<div class="col">
+						<div class="mb-3">
+							<!-- 选择結束日期 -->
+							<label for="dateEnd" class="form-label">預計下架日期:</label> 
+							<input type="date" id="dateEnd" name="dateEnd" class="form-control">
+						</div>
+					</div>
+				</div>
+				<br>
+				<div class="row">
+				
+					<div class="col">
+
+						<div class="mb-3">				
+							<!-- 选择入住时间 -->
+							<label for="checkInTimeLabel" class="form-label">Check-In Time:</label>
+							<select id="checkInTime" name="checkInTime" class="form-select"></select> 
+						</div>
+					</div>
+					
+					<div class="col">
+						<div class="mb-3">
+							<!-- 选择退房时间 -->
+							<label for="checkOutTimeLabel" class="form-label">Check-Out Time:</label>
+							<select id="checkOutTime" name="checkOutTime" class="form-select"></select> 
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="borderArea">
+				<div>
+					<div class="mb-3">
+						<!-- 是否允许额外儿童床 -->
+						<input type="checkbox" id="childExtraBed" name="childExtraBed" value="true" class="form-check-input"> 
+						<label	for="childExtraBed" class="form-label">可加兒童床</label> 
+					</div>
+		
+					<div class="row">
+						<div class="col">
+		
+							<div class="mb-3">
+								<!-- 输入儿童价格 -->
+								<label for="childrenPrice" class="form-label">加設兒童床費用:</label> 
+								<input type="text" id="childrenPrice" name="childrenPrice" value="0" class="form-control">
+							</div>
+						</div>
+						
+						<div class="col">
+							<div class="mb-3">
+								<!-- 输入年龄 -->
+								<label for="age" class="form-label">兒童床使用限制年齡:</label> 
+								<input type="text" id="age" name="age" value="0" class="form-control">
+							</div>
+						</div>	
+					</div>	
+			</div>
+			
+			
+			<div class="mb-3">
+				<input type="checkbox" id="privateBathroom" name="privateBathroom" value="true" class="form-check-input">
+				<label for="privateBathroom" class="form-label">私人衛浴</label>
+			</div>
+			
+			<div class="mb-3">
+				<input type="checkbox" id="showerRoom" name="showerRoom" value="true" class="form-check-input">
+				<label for="showerRoom" class="form-label">公用淋浴間</label>
+			</div>
+
+			</div>
+			<div class="d-grid gap-2">
+				<button type="submit" class="btn btn-primary">完成</button>
+			</div>
+			<br>
+		</form>
+
+		<div>
+			<form method="get" th:action="@{/room/findAllRoom}">
+				<div class="d-grid gap-2">
+					<button type="submit" class="btn btn-outline-secondary">取消</button>
+				</div>
+			</form>
+		</div>
+
+	</div>
+</div>
+	<script th:src="@{/js/insertRoom1.js}"></script>
+</body>
+
+</html>

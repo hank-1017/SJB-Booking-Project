@@ -1,0 +1,42 @@
+$color-main: #4C5356;
+$color-secand: #495156;
+
+* {
+  font-family: Andale Mono,AndaleMono,monospace;
+  color: $color-main;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  letter-spacing: 1px;
+  // outline: 1px solid red;
+}
+img {
+  vertical-align: middle;
+}
+.footer {
+  background: $color-secand;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  .footer-item {
+    color: #EEF3F5;
+    margin: 1rem .5rem;
+  }
+}
+.btn {
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  color: #FFF;
+  padding: 8px 35px;
+  border: none;
+  outline: none;
+  border-radius: 25px;
+  background-color: $color-secand;
+  margin: .8rem 0;
+  &:hover {
+    box-shadow: 1px 1px 5px 0 $color-secand;
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+}
