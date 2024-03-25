@@ -14,8 +14,15 @@
   
 - **後台管理：** 管理員可以進行飯店、房間和訂單的管理，包括新增、編輯、刪除等操作，以確保網站的正常運作和業務流程。
 
-## 技術
+## 使用技術
 
 - **前端：** Vue.js
 - **後端：** Spring Boot
-- **數據庫：** SQL Server
+- **資料庫：** SQL Server
+
+## 預覽畫面
+![SJB-booking截圖1](https://github.com/hank-1017/SJB-Booking-Project/blob/main/website-screenshot/1.png)
+![SJB-booking截圖2](https://github.com/hank-1017/SJB-Booking-Project/blob/main/website-screenshot/2.png)
+![SJB-booking截圖3](https://github.com/hank-1017/SJB-Booking-Project/blob/main/website-screenshot/3.png)
+![SJB-booking截圖4](https://github.com/hank-1017/SJB-Booking-Project/blob/main/website-screenshot/4.png)
+![SJB-booking截圖5](https://github.com/hank-1017/SJB-Booking-Project/blob/main/website-screenshot/7.png)
