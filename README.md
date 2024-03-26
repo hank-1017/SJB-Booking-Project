@@ -22,6 +22,7 @@
 - **前端：** Vue.js、HTML、CSS、Javascript、JSP
 - **後端：** Spring Boot、Java、Hibernate
 - **資料庫：** SQL Server
+- **其他：** Bootstrap、Websocket、Google OAuth 2.0
 
 ## 預覽畫面
 ![SJB-booking截圖1](https://github.com/hank-1017/SJB-Booking-Project/blob/main/website-screenshot/1.png)
