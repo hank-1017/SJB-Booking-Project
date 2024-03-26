@@ -19,8 +19,8 @@
 
 ## 使用技術
 
-- **前端：** Vue.js
-- **後端：** Spring Boot
+- **前端：** Vue.js、HTML、CSS、Javascript、JSP
+- **後端：** Spring Boot、Java、Hibernate
 - **資料庫：** SQL Server
 
 ## 預覽畫面
