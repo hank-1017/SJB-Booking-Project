@@ -28,6 +28,7 @@ public class Hotel {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "hotel", cascade = CascadeType.ALL)
 	private Set<Room> rooms;
 
+
 	//1107新增
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "hotel", cascade = CascadeType.ALL)
 	private Set<HotelNotify> hotelNotifies;
