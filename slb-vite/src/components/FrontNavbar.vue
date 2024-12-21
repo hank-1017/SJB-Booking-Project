@@ -165,7 +165,7 @@ onMounted(async () => {
     rememberMe.value = true;
   }
   const link = await document.createElement('link')
-  link.href = '/src/assets/css/styles.css'
+  link.href = '/css/styles.css'
   link.rel = 'stylesheet'
   await document.head.appendChild(link)
   await checkLoginStatus();

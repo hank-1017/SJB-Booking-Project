@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
-
 @Entity
 @Data
 @Table(name = "HotelNotification ")

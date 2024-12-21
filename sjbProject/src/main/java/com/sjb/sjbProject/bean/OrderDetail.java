@@ -1,19 +1,11 @@
 package com.sjb.sjbProject.bean;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.Date;
+import java.util.Objects;
 
 @Data
 @Entity

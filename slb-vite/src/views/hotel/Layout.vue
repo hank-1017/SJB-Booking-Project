@@ -21,7 +21,7 @@ export default {
   },
   mounted() {
     const link = document.createElement('link')
-    link.href = '/src/assets/css/style.css'
+    link.href = '/css/style.css'
     link.rel = 'stylesheet'
     document.head.appendChild(link)
   },

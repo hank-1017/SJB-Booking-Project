@@ -626,7 +626,7 @@ const filters = ref({
 });
 
 const link = document.createElement('link')
-link.href = '/src/assets/css/styles.css'
+link.href = '/css/styles.css'
 link.rel = 'stylesheet'
 document.head.appendChild(link)
 
